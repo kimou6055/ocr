@@ -1,0 +1,131 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload PDF Document</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <style>
+        .upload-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        .form-group select,
+        .form-group input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .form-group select:focus,
+        .form-group input[type="file"]:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s;
+        }
+        .btn-primary:hover {
+            background: #45a049;
+        }
+        .info-box {
+            background: #f0f8ff;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .document-types {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .type-badge {
+            background: #e3f2fd;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            text-align: center;
+        }
+        .nav-links {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .nav-links a {
+            color: #2196F3;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="upload-container">
+            <h1>📄 PDF Table Extraction System</h1>
+            
+            <div class="info-box">
+                <p><strong>Supported Document Types:</strong></p>
+                <div class="document-types">
+                    <div class="type-badge">NPT</div>
+                    <div class="type-badge">Rebut</div>
+                    <div class="type-badge">Defauts</div>
+                    <div class="type-badge">Kosu</div>
+                </div>
+                <p style="margin-top: 15px;">Upload a PDF document to extract tables and export them as Excel or JSON.</p>
+            </div>
+            
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="id_file">Select PDF File:</label>
+                    {{ form.file }}
+                </div>
+                
+                <div class="form-group">
+                    <label for="document_type">Document Type (Optional):</label>
+                    <select name="document_type" id="document_type">
+                        <option value="">-- Auto-detect --</option>
+                        {% for doc_type in document_types %}
+                        <option value="{{ doc_type.type_code }}">{{ doc_type.type_code }} - {{ doc_type.description|truncatewords:10 }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn-primary">Upload and Process</button>
+            </form>
+            
+            <div class="nav-links">
+                <a href="{% url 'document_list' %}">View All Documents</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
